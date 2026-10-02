@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Inter, Vazirmatn } from "next/font/google";
 import { DEFAULT_LOCALE, LOCALES, dirOf, isLocale, t } from "@/lib/i18n";
+import { canonical, localeAlternates, siteUrl } from "@/lib/site";
 import "../globals.css";
 
 const vazirmatn = Vazirmatn({
@@ -25,12 +26,26 @@ export async function generateMetadata({
 }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   const l = isLocale(locale) ? locale : DEFAULT_LOCALE;
+  const title = t(l, "siteTitle");
+  const description = t(l, "siteDescription");
+
   return {
-    title: {
-      default: t(l, "siteTitle"),
-      template: `%s · ${t(l, "siteOwner")}`,
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s · ${t(l, "siteOwner")}` },
+    description,
+    alternates: {
+      canonical: canonical(l),
+      languages: localeAlternates(),
     },
-    description: t(l, "siteDescription"),
+    openGraph: {
+      type: "website",
+      siteName: t(l, "siteOwner"),
+      locale: l === "fa" ? "fa_IR" : "en_GB",
+      url: canonical(l),
+      title,
+      description,
+    },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

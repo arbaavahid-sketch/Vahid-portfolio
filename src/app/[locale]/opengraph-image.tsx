@@ -24,6 +24,49 @@ const font = await readFile(
   join(process.cwd(), "assets", "Vazirmatn-SemiBold.ttf"),
 );
 
+
+/**
+ * Satori has no bidi reordering: it lays Persian words out left-to-right, which
+ * scrambles the sentence. So each word becomes its own flex item in a
+ * row-reverse row, which Satori does lay out reliably — that puts the words in
+ * the right visual order and gives us the word spacing back.
+ */
+function Words({
+  text,
+  rtl,
+  size,
+  color,
+  wrap = true,
+}: {
+  text: string;
+  rtl: boolean;
+  size: number;
+  color?: string;
+  wrap?: boolean;
+}) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: wrap ? "wrap" : "nowrap",
+        flexDirection: rtl ? "row-reverse" : "row",
+        justifyContent: "flex-start",
+        columnGap: size * 0.12,
+        rowGap: size * 0.28,
+        fontSize: size,
+        color,
+        ...(wrap ? { maxWidth: 1000 } : {}),
+      }}
+    >
+      {text.split(" ").map((word, i) => (
+        <div key={`${word}-${i}`} style={{ display: "flex" }}>
+          {word}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default async function Image({
   params,
 }: {
@@ -49,10 +92,17 @@ export default async function Image({
           padding: 72,
           background: "linear-gradient(115deg, #081c3c 0%, #13447e 100%)",
           color: "#ffffff",
-          direction: fa ? "rtl" : "ltr",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 20,
+            flexDirection: fa ? "row-reverse" : "row",
+            alignSelf: fa ? "flex-end" : "flex-start",
+          }}
+        >
           <div
             style={{
               display: "flex",
@@ -68,30 +118,67 @@ export default async function Image({
           >
             VA
           </div>
-          <div style={{ fontSize: 30, color: "#bfd1e7" }}>
-            {t(locale, "siteOwner")}
-          </div>
+          <Words
+            text={t(locale, "siteOwner")}
+            rtl={fa}
+            size={30}
+            color="#bfd1e7"
+          />
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 28,
+            alignItems: fa ? "flex-end" : "flex-start",
+            textAlign: fa ? "right" : "left",
+          }}
+        >
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 16,
               fontSize: 24,
               color: "#8bc5ff",
+              flexDirection: fa ? "row-reverse" : "row",
             }}
           >
-            <div style={{ width: 56, height: 3, background: "#ec7a1c" }} />
-            {fa ? "آزمایشگاه و صنایع شیمیایی" : "Laboratories & chemical industry"}
+            <div
+              style={{
+                width: 56,
+                height: 3,
+                background: "#ec7a1c",
+                marginLeft: fa ? 16 : 0,
+                marginRight: fa ? 0 : 16,
+              }}
+            />
+            <Words
+              text={
+                fa
+                  ? "آزمایشگاه و صنایع شیمیایی"
+                  : "Laboratories & chemical industry"
+              }
+              rtl={fa}
+              size={24}
+              color="#8bc5ff"
+            />
           </div>
-          <div style={{ fontSize: 62, lineHeight: 1.25, maxWidth: 940 }}>
-            {t(locale, "siteTitle")}
-          </div>
+          <Words
+            text={t(locale, "siteTitle")}
+            rtl={fa}
+            size={fa ? 56 : 62}
+          />
         </div>
 
-        <div style={{ display: "flex", gap: 14 }}>
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            flexDirection: fa ? "row-reverse" : "row",
+            alignSelf: fa ? "flex-end" : "flex-start",
+          }}
+        >
           {demos.map((label) => (
             <div
               key={label}
@@ -104,7 +191,12 @@ export default async function Image({
                 color: "#dbeafe",
               }}
             >
-              {label}
+              <Words
+                text={label}
+                rtl={fa}
+                size={24}
+                wrap={false}
+              />
             </div>
           ))}
         </div>

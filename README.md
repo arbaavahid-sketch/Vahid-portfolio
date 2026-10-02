@@ -1,4 +1,4 @@
-# Artinazma portfolio
+# Vahid portfolio
 
 A bilingual portfolio for Vahid Arbaa's web dashboard services, with three interactive demonstrations for laboratories and chemical-industry businesses. Persian (`/fa`, RTL) is the default; English (`/en`, LTR) is available on every page. `/` redirects to `/fa`.
 
@@ -35,6 +35,12 @@ npm run typecheck
 npm run build
 npm start
 ```
+
+### Public URL
+
+Canonical links, the sitemap and the Open Graph card all need an absolute origin. On Vercel this is picked up from `VERCEL_PROJECT_PRODUCTION_URL` automatically. Once a custom domain is attached, set `NEXT_PUBLIC_SITE_URL` to it (for example `https://example.com`) and it takes precedence. Locally it falls back to `http://localhost:3000`.
+
+The link preview card is generated per language at `/<locale>/opengraph-image`. Satori, which renders it, has no bidirectional text support, so the Persian card lays each word out as its own flex item in a reversed row to get the word order right; its spacing is looser than the English card as a result.
 
 `next/font/google` fetches Inter and Vazirmatn during the build, so Google Fonts must be reachable at build time. The resulting fonts are served locally. No API keys or environment variables are needed. The pages are prerendered; the default configuration runs on Next.js hosting such as Vercel, not a plain static file server.
 
