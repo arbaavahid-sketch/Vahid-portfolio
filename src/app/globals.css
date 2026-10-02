@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+/*
+ * Theming is entirely custom properties — there are no `dark:` utilities — so
+ * dark mode needs no JavaScript and cannot flash. The OS preference applies
+ * from the first paint; an explicit choice on <html data-theme> wins over it
+ * both ways, which is why the dark block is declared under two scopes.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* brand */
+  --brand-navy: #1c3f73;
+  --brand-navy-deep: #12294d;
+  --brand-accent: #ec7a1c;
+
+  /* surfaces & ink */
+  --page: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --border: rgba(11, 18, 32, 0.1);
+  --ink: #0b1220;
+  --ink-2: #4b5563;
+  --ink-3: #6b7280; /* 4.8:1 on white — WCAG AA for small text */
+
+  /* chart chrome */
+  --grid: #e5e7eb;
+  --axis: #c3c2b7;
+  --muted-mark: #cbd5e1;
+
+  /* accent: links, active nav */
+  --accent: #1c3f73;
+  --accent-soft: rgba(28, 63, 115, 0.09);
+
+  /* hero panels are always dark brand art */
+  --hero-bg: linear-gradient(
+    115deg,
+    rgba(8, 28, 60, 0.98),
+    rgba(19, 68, 126, 0.94)
+  );
+
+  /* elevation */
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03);
+  --shadow-pop: 0 18px 40px rgba(15, 23, 42, 0.14);
+
+  /* categorical series — validated, fixed order. Never cycle, never reorder. */
+  --s1: #2a5aa8;
+  --s2: #ec7a1c;
+  --s3: #1baf7a;
+  --s4: #eda100;
+  --s5: #e87ba4;
+  --s6: #4a3aa7;
+
+  /* sequential ramp (single hue, light → dark) */
+  --seq-100: #cde2fb;
+  --seq-250: #86b6ef;
+  --seq-400: #3987e5;
+  --seq-550: #1c5cab;
+  --seq-700: #0d366b;
+
+  /* ordinal ramp for ordered stages — one hue, monotone, light end clears the
+     surface. Validated per mode; the dark steps are chosen, not flipped. */
+  --ord-1: #86b6ef;
+  --ord-2: #5598e7;
+  --ord-3: #2a78d6;
+  --ord-4: #1c5cab;
+  --ord-5: #104281;
+}
+
+/* The OS setting, unless the viewer has explicitly stamped light. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0b1220;
+    --surface: #111a2e;
+    --surface-2: #162238;
+    --border: rgba(255, 255, 255, 0.1);
+    --ink: #f3f4f6;
+    --ink-2: #c3c7d1;
+    --ink-3: #9aa0ab; /* 5.6:1 on the dark surface */
+
+    --grid: #263247;
+    --axis: #383835;
+    --muted-mark: #334155;
+
+    --accent: #9ec5f4;
+    --accent-soft: rgba(255, 255, 255, 0.1);
+
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-pop: 0 18px 40px rgba(0, 0, 0, 0.5);
+
+    --s1: #3987e5;
+    --s2: #d95926;
+    --s3: #199e70;
+    --s4: #c98500;
+    --s5: #d55181;
+    --s6: #9085e9;
+
+    --seq-100: #0d366b;
+    --seq-250: #1c5cab;
+    --seq-400: #3987e5;
+    --seq-550: #86b6ef;
+    --seq-700: #cde2fb;
+
+    --ord-1: #1c5cab;
+    --ord-2: #2a78d6;
+    --ord-3: #5598e7;
+    --ord-4: #86b6ef;
+    --ord-5: #cde2fb;
+  }
+}
+
+/* The viewer's explicit choice, which beats the OS setting. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0b1220;
+  --surface: #111a2e;
+  --surface-2: #162238;
+  --border: rgba(255, 255, 255, 0.1);
+  --ink: #f3f4f6;
+  --ink-2: #c3c7d1;
+  --ink-3: #9aa0ab; /* 5.6:1 on the dark surface */
+
+  --grid: #263247;
+  --axis: #383835;
+  --muted-mark: #334155;
+
+  --accent: #9ec5f4;
+  --accent-soft: rgba(255, 255, 255, 0.1);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-pop: 0 18px 40px rgba(0, 0, 0, 0.5);
+
+  /* same six hues, stepped for the dark surface — not an automatic flip */
+  --s1: #3987e5;
+  --s2: #d95926;
+  --s3: #199e70;
+  --s4: #c98500;
+  --s5: #d55181;
+  --s6: #9085e9;
+
+  --seq-100: #0d366b;
+  --seq-250: #1c5cab;
+  --seq-400: #3987e5;
+  --seq-550: #86b6ef;
+  --seq-700: #cde2fb;
+
+  --ord-1: #1c5cab;
+  --ord-2: #2a78d6;
+  --ord-3: #5598e7;
+  --ord-4: #86b6ef;
+  --ord-5: #cde2fb;
+}
+
+/* Status is reserved and never themed: it means good / warning / serious /
+   critical, and always ships with an icon + label so hue never carries it alone. */
+:root,
+.dark {
+  --st-good: #0ca30c;
+  --st-warning: #fab219;
+  --st-serious: #ec835a;
+  --st-critical: #d03b3b;
+  --st-idle: #94a3b8;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-grid: var(--grid);
+  --color-axis: var(--axis);
+  --color-muted-mark: var(--muted-mark);
+  --color-navy: var(--brand-navy);
+  --color-navy-deep: var(--brand-navy-deep);
+  --color-brand-accent: var(--brand-accent);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-s1: var(--s1);
+  --color-s2: var(--s2);
+  --color-s3: var(--s3);
+  --color-s4: var(--s4);
+  --color-s5: var(--s5);
+  --color-s6: var(--s6);
+  --color-st-good: var(--st-good);
+  --color-st-warning: var(--st-warning);
+  --color-st-serious: var(--st-serious);
+  --color-st-critical: var(--st-critical);
+  --color-st-idle: var(--st-idle);
+  --color-ord-1: var(--ord-1);
+  --color-ord-2: var(--ord-2);
+  --color-ord-3: var(--ord-3);
+  --color-ord-4: var(--ord-4);
+  --color-ord-5: var(--ord-5);
+  --shadow-card: var(--shadow-card);
+  --shadow-pop: var(--shadow-pop);
+  --font-sans:
+    var(--font-vazirmatn), var(--font-inter), system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+}
+
+@utility bg-hero {
+  background-image: var(--hero-bg);
+}
+
+/* Columns of numbers align; large standalone figures use proportional digits. */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+html,
+body {
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--font-vazirmatn), var(--font-inter), system-ui, sans-serif;
+}
+
+html[lang="en"] body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  inset-inline-start: 16px;
+  top: -48px;
+  z-index: 100;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--brand-navy);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* Persian typography: Vazirmatn wants a taller line, and no letter-spacing —
+   tracking utilities are tuned for Latin and only loosen Persian joins. */
+html[lang="fa"] body {
+  line-height: 1.75;
+}
+html[lang="fa"] [class*="tracking-"] {
+  letter-spacing: 0;
+}
+
+/* Charts keep a left-to-right frame in both languages: a time axis that runs
+   right-to-left is not a convention anyone reads, and mirroring it would make
+   the Persian and English versions of the same chart disagree. */
+[data-chart] {
+  direction: ltr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
